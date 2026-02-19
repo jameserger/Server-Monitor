@@ -17,13 +17,13 @@ class BusinessResponse: Codable, Identifiable {
     var city: String
     var state: String
     var zip: String
-    var latitude: Double
-    var longitude: Double
+    var latitude: Double?
+    var longitude: Double?
     var location: LocationResponse?
     var discounts: [DiscountResponse]?
     var webSite: String
     
-    init(id: Int, businessName: String, address: String, city: String, state: String, zip: String, latitude: Double, longitude: Double, webSite: String) {
+    init(id: Int, businessName: String, address: String, city: String, state: String, zip: String, latitude: Double?, longitude: Double?, webSite: String) {
         self.id = id
         self.businessName = businessName
         self.address = address
@@ -47,8 +47,8 @@ class BusinessResponse: Codable, Identifiable {
         city = try container.decode(String.self, forKey: .city)
         state = try container.decode(String.self, forKey: .state)
         zip = try container.decode(String.self, forKey: .zip)
-        latitude = try container.decode(Double.self, forKey: .latitude)
-        longitude = try container.decode(Double.self, forKey: .longitude)
+        latitude = try container.decodeIfPresent(Double.self, forKey: .latitude)
+        longitude = try container.decodeIfPresent(Double.self, forKey: .longitude)
         location = try container.decodeIfPresent(LocationResponse.self, forKey: .location)
         discounts = try container.decodeIfPresent([DiscountResponse].self, forKey: .discounts)
         webSite = try container.decode(String.self, forKey: .webSite)
@@ -63,14 +63,14 @@ class BusinessResponse: Codable, Identifiable {
         try container.encode(city, forKey: .city)
         try container.encode(state, forKey: .state)
         try container.encode(zip, forKey: .zip)
-        try container.encode(latitude, forKey: .latitude)
-        try container.encode(longitude, forKey: .longitude)
+        try container.encodeIfPresent(latitude, forKey: .latitude)
+        try container.encodeIfPresent(longitude, forKey: .longitude)
         try container.encodeIfPresent(location, forKey: .location)
         try container.encodeIfPresent(discounts, forKey: .discounts)
         try container.encode(webSite, forKey: .webSite)
     }
     
     var coordinate: CLLocationCoordinate2D {
-        .init(latitude: latitude, longitude: longitude)
+        .init(latitude: latitude ?? 0, longitude: longitude ?? 0)
     }
 }

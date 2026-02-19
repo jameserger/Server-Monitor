@@ -15,7 +15,7 @@ struct BusinessView: View {
     @State private var longitudeText: String = ""
 
     @State private var isSaving: Bool = false
-    
+    @State private var isLoading: Bool = false
 
     var body: some View {
         VStack(spacing: 16) {
@@ -59,7 +59,65 @@ struct BusinessView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
+            Divider().padding(.vertical, 8)
+
+            Button {
+                Task { await loadBusinesses() }
+            } label: {
+                Text(isLoading ? "Loading Businesses..." : "All Businesses")
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, minHeight: 44)
+            }
+            .buttonStyle(.bordered)
+            .disabled(isLoading)
+
+            if isLoading {
+                ProgressView()
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(service.businessList) { business in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(business.businessName)
+                                    .font(.headline)
+
+                                Text("ID: \(business.id)")
+                                
+                                Text("\(business.city), \(business.state)")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+
+                                Text("Lat: \(business.latitude ?? 0.0)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                
+                                Text("Long: \(business.longitude ?? 0.0)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(10)
+                            .onTapGesture {
+                                // Autofill fields when tapped
+                                businessIdText = String(business.id)
+                                latitudeText = String(business.latitude ?? 0.0)
+                                longitudeText = String(business.longitude ?? 0.0)
+                            }
+                        }
+                    }
+                }
+            }
+
+            if !service.errorMessage.isEmpty {
+                Text(service.errorMessage)
+                    .foregroundStyle(.red)
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             Spacer()
+            
         }
         .padding()
         .navigationTitle("Update Business")
@@ -85,5 +143,13 @@ struct BusinessView: View {
         defer { isSaving = false }
 
         await service.updateLatLong(businessId: businessId, lat: lat, long: lon)
+    }
+    
+    @MainActor
+    private func loadBusinesses() async {
+        isLoading = true
+        defer { isLoading = false }
+
+        await service.getAllBusinesses()
     }
 }

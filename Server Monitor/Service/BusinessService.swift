@@ -130,7 +130,11 @@ class BusinessService: ObservableObject {
             errorMessage = ""
 
         } catch {
-            errorMessage = "Failed to load businesses: \(error.localizedDescription)"
+            if let decodingError = error as? DecodingError {
+                errorMessage = "Decode failed: \(decodingError)"
+            } else {
+                errorMessage = "Failed to load businesses: \(error.localizedDescription)"
+            }
         }
     }
     
