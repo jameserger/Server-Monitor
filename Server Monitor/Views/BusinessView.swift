@@ -64,7 +64,7 @@ struct BusinessView: View {
             Button {
                 Task { await loadBusinesses() }
             } label: {
-                Text(isLoading ? "Loading Businesses..." : "All Businesses")
+                Text(isLoading ? "Loading Businesses..." : "Get All Businesses")
                     .fontWeight(.bold)
                     .frame(maxWidth: .infinity, minHeight: 44)
             }
