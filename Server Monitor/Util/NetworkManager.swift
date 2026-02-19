@@ -29,13 +29,13 @@ final class NetworkManager {
 
     nonisolated static func getRequest(path: String, method: String) -> URLRequest {
         
-        let scheme = "http://"
-        let host   = "localhost"
-        let port   = ":5000"
+        //let scheme = "http://"
+        //let host   = "localhost"
+        //let port   = ":5000"
         
-        //let scheme = "https://"
-        //let host   = "exploregravy.com"
-        //let port   = ""
+        let scheme = "https://"
+        let host   = "exploregravy.com"
+        let port   = ""
 
         let url = URL(string: scheme + host + port + path)!
         var request = URLRequest(url: url)
