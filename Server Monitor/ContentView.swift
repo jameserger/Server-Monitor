@@ -5,19 +5,18 @@
 //  Created by Gandalf on 1/31/26.
 //
 
+// Server Monitor/Server Monitor/ContentView.swift
+
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            MonitorView()
         }
-        .padding()
     }
 }
+
 
 #Preview {
     ContentView()
